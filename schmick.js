@@ -427,7 +427,7 @@ window.Schmick = (function(window, $) {
                 var contentType = response.getResponseHeader('Content-Type');
                 if (contentDisposition || (contentType && contentType.indexOf('text') !== 0)) {
                     cancelLoadNewPage();
-                    fallback();
+                    executeFallback(fallback);
                     return;
                 }
 
