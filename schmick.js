@@ -93,8 +93,8 @@ window.Schmick = (function(window, $) {
      *          beforeContainersReplaced: function () {},
      *          afterContainersReplaced: function () {},
      *          newPageShown: function () {},
-                originalPageShown: function () {},
-                requestError: function (response, textStatus, errorThrown) {}
+     *          originalPageShown: function () {},
+     *          requestError: function (response, textStatus, errorThrown) {}
      *      }
      * });
      *
