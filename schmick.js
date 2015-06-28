@@ -273,8 +273,12 @@ window.Schmick = (function(window, $) {
      * @returns {boolean}
      */
     function isHandleableUrl(url) {
-        if (url.indexOf('javascript:') === 0) {
-            return false;
+        if (url.indexOf(':') !== -1) {
+            var protocol = url.split(':')[0].toLowerCase();
+
+            if (protocol !== 'http' && protocol !== 'https') {
+                return false;
+            }
         }
 
         var link = $('<a />').attr('href', url).get(0);
