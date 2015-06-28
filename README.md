@@ -9,8 +9,8 @@ the page content with custom transition animations.
 Schmick relies on relatively newer browser apis but will degrade gracefully if the required api is not
 supported by the user's browser.
 
-Usage Example
-=============
+Usage
+=====
 
 Schmick should not require any changes to server side code. Schmick works by replacing
 a *container* element on each page load so sites with static headers and footers are most
@@ -29,6 +29,11 @@ Schmick.load({
 
 Some of the default settings are stated explicitly in the above code. You can remove
 any settings you dont need to override.
+
+Example
+=======
+
+An example of this library in action can be found on [my personal site](http://elliotswebsite.com/).
 
 Installation
 ============
@@ -120,11 +125,6 @@ Here are the available options for loading the Schmick library:
     }
 }
 ```
-
-Example
-=======
-
-An example use-case for this library can be found on [my personal site](http://elliotswebsite.com/).
 
 
 Browser Compatibility
