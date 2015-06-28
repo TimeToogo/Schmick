@@ -243,7 +243,11 @@ window.Schmick = (function(window, $) {
         }
 
         beginLoadNewPage(function () {
-            loadNewPage(window.document.location, event.originalEvent.state.html);
+            loadNewPage(
+                window.document.location,
+                event.originalEvent.state.html,
+                true // Dont push state
+            );
         });
     }
 
@@ -440,7 +444,7 @@ window.Schmick = (function(window, $) {
      * @param {String} html
      * @returns {void}
      */
-    function loadNewPage(url, html) {
+    function loadNewPage(url, html, dontPushState) {
 
         var options = schmick.options;
 
@@ -473,8 +477,10 @@ window.Schmick = (function(window, $) {
         var elements = $(containerSelector);
         elements.css('display', 'none');
 
-        // Update the history, url and title
-        window.history.pushState({ html: html }, window.document.title, url);
+        if (!dontPushState) {
+            // Update the history, url and title
+            window.history.pushState({ html: html }, window.document.title, url);
+        }
 
         // Reload the specified scripts and then perform the show animation
         $.holdReady(true);
