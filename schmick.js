@@ -171,8 +171,11 @@ window.Schmick = (function(window, $) {
         if (isHandleableElement(form) && isHandleableUrl(url) && isHandleableEvent(event)) {
             event.preventDefault();
 
-            var fallback = function () {
-                form.get(0).submit();
+            var fallback = {
+                type: 'form',
+                method: method,
+                action: url,
+                data: form.serializeArray()
             };
 
             if (method === 'GET') {
@@ -191,6 +194,24 @@ window.Schmick = (function(window, $) {
                 }, fallback);
             }
         }
+    }
+
+    /**
+     * Emulates an form submission link click
+     *
+     * @param {String} method
+     * @param {String} action
+     * @param {Object} data
+     * @returns {void}
+     */
+    function formSubmissionFallback(method, action, data) {
+        var form = $('<form>').attr({ method: method, action: action });
+
+        for (var i = 0; i < data.length; i++) {
+            form.append($('<input />').attr(data[i]));
+        }
+
+        form.appendTo(window.document.body).submit();
     }
 
     /**
@@ -217,14 +238,38 @@ window.Schmick = (function(window, $) {
         if (isHandleableElement(link) && isHandleableUrl(url) && isHandleableEvent(event)) {
             event.preventDefault();
 
-            var fallback = function () {
-                window.location = url;
-            };
-
             loadNewPageViaAjax({
                 url: url,
                 method: 'GET'
-            }, fallback);
+            }, {
+                type: 'link',
+                url: url
+            });
+        }
+    }
+
+    /**
+     * Emulates an native link click
+     *
+     * @param {String} url
+     * @returns {void}
+     */
+    function linkClickFallback(url) {
+        window.location = url;
+    }
+
+    /**
+     * Executes a fallback operation
+     *
+     * @param {Object} fallback
+     * @returns {void}
+     */
+    function executeFallback(fallback) {
+        if (fallback.type === 'link') {
+            linkClickFallback(fallback.url);
+        }
+        if (fallback.type === 'form') {
+            formSubmissionFallback(fallback.method, fallback.action, fallback.data);
         }
     }
 
@@ -242,14 +287,16 @@ window.Schmick = (function(window, $) {
             return;
         }
 
-        if (!event.originalEvent.state || !event.originalEvent.state.html) {
+        var originalEvent = event.originalEvent;
+        if (!originalEvent.state || !originalEvent.state.html) {
             return;
         }
 
         beginLoadNewPage(function () {
             loadNewPage(
                 window.document.location,
-                event.originalEvent.state.html,
+                originalEvent.state.html,
+                originalEvent.state.fallback,
                 true // Dont push state
             );
         });
@@ -312,7 +359,7 @@ window.Schmick = (function(window, $) {
      * with the supplied ajax options.
      *
      * @param {Object} ajaxOptions
-     * @param {Function} fallback
+     * @param {Object} fallback
      * @returns {void}
      */
     function loadNewPageViaAjax(ajaxOptions, fallback) {
@@ -330,7 +377,7 @@ window.Schmick = (function(window, $) {
 
         var doLoadNewPage = function () {
             if (mutex.hasFinishedHidingAnimation && mutex.newPage.url) {
-                loadNewPage(mutex.newPage.url, mutex.newPage.html);
+                loadNewPage(mutex.newPage.url, mutex.newPage.html, fallback);
             }
         };
 
@@ -446,9 +493,11 @@ window.Schmick = (function(window, $) {
      *
      * @param {String} url
      * @param {String} html
+     * @param {Object} fallback
+     * @param {Boolean=} dontPushState
      * @returns {void}
      */
-    function loadNewPage(url, html, dontPushState) {
+    function loadNewPage(url, html, fallback, dontPushState) {
 
         var options = schmick.options;
 
@@ -460,6 +509,13 @@ window.Schmick = (function(window, $) {
         }, document.title, document.location);
 
         var newDoc = parseResponseIntoHTMLDocument(html);
+
+        // If the document parsing failed, something went wrong with the response
+        // or the current parsing api is no good, fallback to standard methods.
+        if (!newDoc) {
+            executeFallback(fallback);
+            return;
+        }
 
         // Perform the replacement with the new container elements while they are hidden
         options.events.beforeContainersReplaced();
@@ -483,7 +539,7 @@ window.Schmick = (function(window, $) {
 
         if (!dontPushState) {
             // Update the history, url and title
-            window.history.pushState({ html: html }, window.document.title, url);
+            window.history.pushState({ html: html, fallback: fallback }, window.document.title, url);
         }
 
         // Reload the specified scripts and then perform the show animation
@@ -524,15 +580,19 @@ window.Schmick = (function(window, $) {
      */
     function parseResponseIntoHTMLDocument(html) {
         if (typeof DOMParser !== 'undefined') {
-            return (new DOMParser()).parseFromString(html, 'text/html');
-        } else {
-            var doc = window.document.implementation.createHTMLDocument();
-            doc.open();
-            doc.write(html);
-            doc.close();
+            var parsedDoc = (new DOMParser()).parseFromString(html, 'text/html');
 
-            return doc;
+            if (parsedDoc) {
+                 return parsedDoc;
+            }
         }
+
+        var doc = window.document.implementation.createHTMLDocument();
+        doc.open();
+        doc.write(html);
+        doc.close();
+
+        return doc;
     }
 
     /**
