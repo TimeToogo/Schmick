@@ -6,7 +6,7 @@ for sites that were built on traditional browser navigation such a `<a href="...
 Schmick will override standard browser behaviour by substituting standard requests with ajax to reload
 the page content with custom transition animations.
 
-Schmick relies on relatively newer js api but will degrade gracefully if the required api is not
+Schmick relies on relatively newer browser apis but will degrade gracefully if the required api is not
 supported by the user's browser.
 
 Usage Example
