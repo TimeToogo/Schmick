@@ -242,6 +242,10 @@ window.Schmick = (function(window, $) {
             return;
         }
 
+        if (!event.originalEvent.state || !event.originalEvent.state.html) {
+            return;
+        }
+
         beginLoadNewPage(function () {
             loadNewPage(
                 window.document.location,
