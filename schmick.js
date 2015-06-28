@@ -408,7 +408,9 @@ window.Schmick = (function(window, $) {
         state.status = status.LOADING_PAGE;
         var elements = $(schmick.options.container);
         performAnimation('hide', elements, function () {
-            callback();
+            if (callback) {
+                callback();
+            }
             schmick.options.events.oldPageHidden();
         });
     }
@@ -423,7 +425,9 @@ window.Schmick = (function(window, $) {
     function cancelLoadNewPage(callback) {
         var elements = $(schmick.options.container);
         performAnimation('show', elements, function () {
-            callback();
+            if (callback) {
+                callback();
+            }
             schmick.options.events.originalPageShown();
             state.complete();
         });
