@@ -169,12 +169,16 @@ window.Schmick = (function(window, $) {
         if (isHandleableElement(form) && isHandleableUrl(url) && isHandleableEvent(event)) {
             event.preventDefault();
 
+            var fallback = function () {
+                form.get(0).submit();
+            };
+
             if (method === 'GET') {
                 loadNewPageViaAjax({
                     url: url,
                     method: method,
                     data: form.serialize()
-                });
+                }, fallback);
             } else {
                 loadNewPageViaAjax({
                     url: url,
@@ -182,7 +186,7 @@ window.Schmick = (function(window, $) {
                     data: new FormData(form.get(0)),
                     contentType: false,
                     processData: false
-                });
+                }, fallback);
             }
         }
     }
@@ -211,10 +215,14 @@ window.Schmick = (function(window, $) {
         if (isHandleableElement(link) && isHandleableUrl(url) && isHandleableEvent(event)) {
             event.preventDefault();
 
+            var fallback = function () {
+                window.location = url;
+            };
+
             loadNewPageViaAjax({
                 url: url,
                 method: 'GET'
-            });
+            }, fallback);
         }
     }
 
@@ -294,12 +302,13 @@ window.Schmick = (function(window, $) {
      * with the supplied ajax options.
      *
      * @param {Object} ajaxOptions
+     * @param {Function} fallback
      * @returns {void}
      */
-    function loadNewPageViaAjax(ajaxOptions) {
+    function loadNewPageViaAjax(ajaxOptions, fallback) {
         if (state.status !== status.NONE) {
             state.callWhenOperationComplete(function () {
-                loadNewPageViaAjax(ajaxOptions);
+                loadNewPageViaAjax(ajaxOptions, fallback);
             });
             return;
         }
@@ -354,9 +363,19 @@ window.Schmick = (function(window, $) {
         ajaxOptions.dataType = 'text';
 
         state.currentXHR = $.ajax(ajaxOptions)
-            .success(function (response) {
+            .success(function (html, textStatus, response) {
+                // If the response has a content-disposition or the type is not text
+                // then this is probably a file download, fall back to normal methods.
+                var contentDisposition = response.getResponseHeader('Content-Disposition');
+                var contentType = response.getResponseHeader('Content-Type');
+                if (contentDisposition || (contentType && contentType.indexOf('text') !== 0)) {
+                    cancelLoadNewPage();
+                    fallback();
+                    return;
+                }
+
                 mutex.newPage.url = this.url;
-                mutex.newPage.html = response;
+                mutex.newPage.html = html;
                 doLoadNewPage();
             })
             .fail(function (response, textStatus, errorThrown) {
@@ -401,7 +420,10 @@ window.Schmick = (function(window, $) {
      */
     function cancelLoadNewPage(callback) {
         var elements = $(schmick.options.container);
-        performAnimation('show', elements, callback);
+        performAnimation('show', elements, function () {
+            callback();
+            state.complete();
+        });
     }
 
     /**
