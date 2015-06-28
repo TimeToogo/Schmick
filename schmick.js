@@ -29,6 +29,7 @@ window.Schmick = (function(window, $) {
                 beforeContainersReplaced: function () {},
                 afterContainersReplaced: function () {},
                 newPageShown: function () {},
+                originalPageShown: function () {},
                 requestError: function (response, textStatus, errorThrown) {}
             }
         };
@@ -92,6 +93,7 @@ window.Schmick = (function(window, $) {
      *          beforeContainersReplaced: function () {},
      *          afterContainersReplaced: function () {},
      *          newPageShown: function () {},
+                originalPageShown: function () {},
                 requestError: function (response, textStatus, errorThrown) {}
      *      }
      * });
@@ -422,6 +424,7 @@ window.Schmick = (function(window, $) {
         var elements = $(schmick.options.container);
         performAnimation('show', elements, function () {
             callback();
+            schmick.options.events.originalPageShown();
             state.complete();
         });
     }

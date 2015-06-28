@@ -110,6 +110,10 @@ Here are the available options for loading the Schmick library:
         // is complete
         newPageShown: function () {},
         
+        // Called if the new page request was cancelled and the original
+        // page is shown again.
+        originalPageShown: function () {},
+        
         // Called if the ajax request experiences an error
         // @see http://api.jquery.com/jquery.ajax/
         requestError: function (response, textStatus, errorThrown) {}
