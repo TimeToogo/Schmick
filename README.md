@@ -121,6 +121,12 @@ Here are the available options for loading the Schmick library:
 }
 ```
 
+Example
+=======
+
+An example use-case for this library can be found on [my personal site](http://elliotswebsite.com/).
+
+
 Browser Compatibility
 =====================
 
