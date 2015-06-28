@@ -1,0 +1,24 @@
+{
+  "name": "schmick",
+  "authors": [
+    "Elliot Levin <elliotlevin@hotmail.com>"
+  ],
+  "description": "Simple transitions between pages for sites built without ajax",
+  "main": "schmick.js",
+  "keywords": [
+    "ajax",
+    "transition",
+    "animation"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/TimeToogo/Schmick",
+  "ignore": [
+    "**/.*",
+    "bower_components",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": ">=1.9",
+    "jquery-ui": ">=1.11"
+  }
+}
