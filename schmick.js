@@ -18,6 +18,8 @@ window.Schmick = (function(window, $) {
         self.defaults = {
             container: 'body',
             scriptsToReload: [],
+            linkSelector: 'a[href]',
+            formSelector: 'form',
             effects: {
                 hide: { effect: 'fade', duration: 300 },
                 show: { effect: 'fade', duration: 300 }
@@ -82,6 +84,8 @@ window.Schmick = (function(window, $) {
      * Schmick.load({
      *      container: 'body',
      *      scriptsToReload: [],
+     *      linkSelector: 'a[href]',
+     *      formSelector: 'form',
      *      effects: {
      *          hide: { effect: 'fade', duration: 300 },
      *          show: { effect: 'fade', duration: 300 }
@@ -112,8 +116,8 @@ window.Schmick = (function(window, $) {
 
         schmick.options = $.extend(true, {}, schmick.defaults, options);
 
-        $(document).on('click', 'a[href]', handleLinkClick);
-        $(document).on('submit', 'form', handleFormSubmission);
+        $(document).on('click', schmick.options.linkSelector, handleLinkClick);
+        $(document).on('submit', schmick.options.formSelector, handleFormSubmission);
         $(window).on('popstate', handlePopState);
 
         window.__schmick = schmick;

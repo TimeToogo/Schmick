@@ -79,7 +79,13 @@ Here are the available options for loading the Schmick library:
     // you can enter the script src urls here and these will be re-executed
     // on every page load.
     scriptsToReload: [],
-    
+
+    // Links matching this selector are handled by Schmick.
+    linkSelector: 'a[href]',
+
+    // Forms matching this selector are handled by Schmick.
+    formSelector: 'form',
+
     // The animation effect options
     // This library uses jQuery UI to perform the animations
     // any options supported by jQuery can be specified here.
