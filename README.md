@@ -1,6 +1,9 @@
 Schmick
 =======
 
+![Bower](https://img.shields.io/bower/v/schmick.svg?style=flat-square)
+![GitHub license](https://img.shields.io/github/license/TimeToogo/Schmick.svg?style=flat-square)
+
 Schmick is frontend js library that is designed to provide a slicker navigation experience
 for sites that were built on traditional browser navigation such a `<a href="...">` and `<form>` elements.
 Schmick will override standard browser behaviour by substituting standard requests with ajax to reload
