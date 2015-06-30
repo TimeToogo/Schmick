@@ -48,21 +48,18 @@ window.Schmick = (function(window, $) {
     var state = {
         status: status.NONE,
         currentXHR: null,
-        completeListeners: [],
-        callWhenOperationComplete: function (listener) {
-            state.completeListeners.push(listener);
+        operationQueue: [],
+        queueOperation: function (listener) {
+            state.operationQueue.push(listener);
         },
         complete: function () {
             state.status = status.NONE;
             state.currentXHR = null;
 
-            // Create a copy of the listeners so that any listeners
-            // added by invoking the current listeners will be invoked
-            // in the next complete call.
-            var tempListeners = state.completeListeners.slice(0);
-            state.completeListeners = [];
-            for (var i = 0; i < tempListeners.length; i++) {
-                tempListeners[i]();
+            if (state.operationQueue.length > 0) {
+                var listener = state.operationQueue[0];
+                state.operationQueue = state.operationQueue.slice(1);
+                listener();
             }
         }
     };
@@ -285,7 +282,7 @@ window.Schmick = (function(window, $) {
      */
     function handlePopState(event) {
         if (state.status !== status.NONE) {
-            state.callWhenOperationComplete(function () {
+            state.queueOperation(function () {
                 handlePopState(event);
             });
             return;
@@ -368,7 +365,7 @@ window.Schmick = (function(window, $) {
      */
     function loadNewPageViaAjax(ajaxOptions, fallback) {
         if (state.status !== status.NONE) {
-            state.callWhenOperationComplete(function () {
+            state.queueOperation(function () {
                 loadNewPageViaAjax(ajaxOptions, fallback);
             });
             return;

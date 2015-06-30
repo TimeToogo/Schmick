@@ -2,17 +2,20 @@
 <html>
 <head lang="en">
     <meta charset="UTF-8">
-    <title>Form</title>
+    <title>Index</title>
 
     <link type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.css" />
     <script type="text/javascript" src="//code.jquery.com/jquery-2.1.4.min.js"></script>
-    <script type="text/javascript" src="//code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/gsap/latest/TweenMax.min.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/gsap/latest/jquery.gsap.min.js"></script>
     <script type="text/javascript" src="../../schmick.js"></script>
     <script type="text/javascript" src="js/app.js"></script>
     <script type="text/javascript">
         Schmick.load({
             container: 'section.content',
-            scriptsToReload: ['js/app.js']
+            scriptsToReload: ['js/app.js'],
+            effects: {
+            }
         });
     </script>
 </head>
@@ -28,24 +31,7 @@
         </ul>
     </nav>
 </header>
-<section class="content">
-    <form action="results.html">
-        <input name="input" />
-        <button type="submit">Submit</button>
-    </form>
-
-    <form id="external-form" action="http://google.com">
-        <input name="q" />
-        <button type="submit">Google search</button>
-    </form>
-
-    <form action="download.bin" method="post">
-        <input name="input" />
-        <button type="submit">Download</button>
-    </form>
-
-    <a href="download.bin">Download</a>
-</section>
+<section class="content"><a id="external-link" href="http://google.com">google</a></section>
 <footer>
     This is the footer
 </footer>
