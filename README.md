@@ -115,10 +115,10 @@ Here are the available options for loading the Schmick library:
         newPageDownloadProgress: function (percentage) { },
         
         // Called before the container old elements are replaced
-        beforeContainersReplaced: function () {},
+        beforeContainersReplaced: function (newDoc) {},
         
         // Called after the container elements have been replaced
-        afterContainersReplaced: function () {},
+        afterContainersReplaced: function (newDoc) {},
         
         // Called after the new page container elements show animation
         // is complete

@@ -28,8 +28,8 @@ window.Schmick = (function(window, $) {
                 oldPageHidden: function () {},
                 newPageUploadProgress: function (percentage) { },
                 newPageDownloadProgress: function (percentage) { },
-                beforeContainersReplaced: function () {},
-                afterContainersReplaced: function () {},
+                beforeContainersReplaced: function (newDoc) {},
+                afterContainersReplaced: function (newDoc) {},
                 newPageShown: function () {},
                 originalPageShown: function () {},
                 requestError: function (response, textStatus, errorThrown) {}
@@ -91,8 +91,8 @@ window.Schmick = (function(window, $) {
      *          oldPageHidden: function () {},
      *          newPageUploadProgress: function (percentage) { },
      *          newPageDownloadProgress: function (percentage) { },
-     *          beforeContainersReplaced: function () {},
-     *          afterContainersReplaced: function () {},
+     *          beforeContainersReplaced: function (newDoc) {},
+     *          afterContainersReplaced: function (newDoc) {},
      *          newPageShown: function () {},
      *          originalPageShown: function () {},
      *          requestError: function (response, textStatus, errorThrown) {}
@@ -519,7 +519,7 @@ window.Schmick = (function(window, $) {
         }
 
         // Perform the replacement with the new container elements while they are hidden
-        options.events.beforeContainersReplaced();
+        options.events.beforeContainersReplaced(newDoc);
         var containerSelector = options.container;
         var containerSelectors = containerSelector.split(',');
         containerSelectors.push('html > head > title');
@@ -532,7 +532,7 @@ window.Schmick = (function(window, $) {
             containerSelector = 'html';
             replaceContainerElements(['html'], window.document, newDoc);
         }
-        options.events.afterContainersReplaced();
+        options.events.afterContainersReplaced(newDoc);
 
         // Find the new container elements and ensure they are hidden
         var elements = $(containerSelector);
